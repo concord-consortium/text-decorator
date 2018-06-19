@@ -1,4 +1,4 @@
-import DummyClass from "../src/text-decorator"
+import TextDecorator from "../src/text-decorator"
 
 /**
  * Dummy test
@@ -8,7 +8,7 @@ describe("Dummy test", () => {
     expect(true).toBeTruthy()
   })
 
-  it("DummyClass is instantiable", () => {
-    expect(new DummyClass()).toBeInstanceOf(DummyClass)
+  it("TextDecorator is instantiable", () => {
+    expect(new TextDecorator()).toBeInstanceOf(TextDecorator)
   })
 })
