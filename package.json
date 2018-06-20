@@ -80,6 +80,7 @@
   "devDependencies": {
     "@types/jest": "^22.0.0",
     "@types/node": "^10.0.3",
+    "@types/parse5": "^5.0.0",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^3.0.0",
@@ -109,5 +110,7 @@
     "typescript": "^2.6.2",
     "validate-commit-msg": "^2.12.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "parse5": "^5.0.0"
+  }
 }
