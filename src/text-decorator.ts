@@ -16,19 +16,26 @@ interface ITextRun {
   end: number;
 }
 
-export interface IDecorateReactOptions {
-  filterClass?: string;
+interface IDecorateOptions {
+  enableFilterClass?: string;
   words: string[];
+}
+
+export interface IDecorateHtmlOptions extends IDecorateOptions {
+  replace: string;
+}
+
+export interface IDecorateReactOptions extends IDecorateOptions {
   replace: string | ReactElement;
 }
 
 export default class TextDecorator {
 
-  static decorateHtml(input: string, words: string[], replaceStr: string) {
+  static decorateHtml(input: string, options: IDecorateHtmlOptions) {
     const textRuns: ITextRun[] = [];
-    const regex = new RegExp(`(?:^|\\b)(${words.join('|')})(?=\\b|$)`, 'gi');
-    const options: ParserOptions = { sourceCodeLocationInfo: true };
-    const fragment: Node = parse5.parseFragment(input, options) as Node;
+    const regex = new RegExp(`(?:^|\\b)(${options.words.join('|')})(?=\\b|$)`, 'gi');
+    const parseOptions: ParserOptions = { sourceCodeLocationInfo: true };
+    const fragment: Node = parse5.parseFragment(input, parseOptions) as Node;
 
     const identifyTextRuns = (node: Node) => {
       const nodeAsParent = node as any as ParentNode;
@@ -49,7 +56,7 @@ export default class TextDecorator {
     for (let i = textRuns.length - 1; i >= 0; --i) {
       const textRun = textRuns[i];
       const text = result.substring(textRun.start, textRun.end);
-      const newText = text.replace(regex, replaceStr);
+      const newText = text.replace(regex, options.replace);
       if (newText !== text) {
         const prefix = textRun.start > 0 ? result.substring(0, textRun.start) : '';
         const suffix = textRun.end < result.length ? result.substring(textRun.end) : '';
