@@ -172,3 +172,48 @@ export default class TextDecorator {
     return decorateNode(input);
   }
 }
+
+/*
+ * decorateReactHOC()
+ * 
+ * Higher-order component which can be used to wrap another component,
+ * decorating text within the wrapped component.
+ * 
+ * cf. https://medium.com/@franleplant/react-higher-order-components-in-depth-cf9032ee6c3e
+ * for discussion of "render highjacking" in a higher-order component using the
+ * "inheritance inversion" technique used here.
+ * 
+ * cf. https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
+ * for discussion of TypeScript types for higher-order components.
+ * 
+ * Usage:
+ *  class MyClass {
+ *    render() { ... }
+ *  }
+ *  export default decorateReactHOC(options)(MyClass);
+ */
+export function decorateReactHOC(options: IDecorateReactOptions) {
+  return <P extends object>(WrappedComponent: React.ComponentClass<P>) => {
+    return class DecoratedWrappedComponent extends WrappedComponent {
+      render() {
+        return TextDecorator.decorateReact(super.render(), options);
+      }
+    };
+  };
+}
+
+/*
+ * DecorateChildren
+ * 
+ * React component which decorates any text among its children.
+ * decorateOptions must be passed in props.
+ * cf. https://medium.com/@franleplant/react-higher-order-components-in-depth-cf9032ee6c3e
+ * Appendix B for discussion of parent component versus higher-order component wrapper.
+ */
+interface IProps {
+  decorateOptions: IDecorateReactOptions;
+}
+export const DecorateChildren: React.SFC<IProps> = (props) => {
+  const { children, decorateOptions } = props;
+  return TextDecorator.decorateReact(children, decorateOptions) as ReactElement;
+};

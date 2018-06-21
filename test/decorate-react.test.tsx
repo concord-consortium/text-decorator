@@ -164,6 +164,17 @@ describe("Test decorateReact (i.e. JSX/TSX)", () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expected));
   });
 
+  it("wraps partial text nodes with <span> nodes and classNames", () => {
+    const input = <div>Some More "Text"</div>;
+    const options: IDecorateReactOptions = {
+            words: ['Text'],
+            replace: <span>$1</span>
+          };
+    const expected = <div>Some More "<span key='Text-0'>Text</span>"</div>;
+    const result = TextDecorator.decorateReact(input, options) as ReactElement;
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expected));
+  });
+
   it("wraps multiple text matches with <span> nodes and classNames", () => {
     const input = <div>Some More Text</div>;
     const options: IDecorateReactOptions = {
