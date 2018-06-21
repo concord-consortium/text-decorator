@@ -2,6 +2,10 @@ import parse5, { DefaultTreeNode as Node,
                 DefaultTreeParentNode as ParentNode,
                 DefaultTreeTextNode as TextNode, 
                 Location, ParserOptions } from 'parse5';
+import * as React from 'react';
+type ReactElement = React.ReactElement<any>;
+type ReactNode = React.ReactNode;
+type ReactNodeArray = React.ReactNodeArray;
 
 // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
   // import "core-js/fn/array.find"
@@ -11,6 +15,13 @@ interface ITextRun {
   start: number;
   end: number;
 }
+
+export interface IDecorateReactOptions {
+  filterClass?: string;
+  words: string[];
+  replace: string | ReactElement;
+}
+
 export default class TextDecorator {
 
   static decorateHtml(input: string, words: string[], replaceStr: string) {
@@ -46,5 +57,111 @@ export default class TextDecorator {
       }
     }
     return result;
+  }
+
+  static decorateReact(input: ReactNode, options: IDecorateReactOptions): ReactNode {
+    // regex for matching glossary words
+    const regex = new RegExp(`(?:^|\\b)(${options.words.join('|')})(?=\\b|$)`, 'gi');
+    // generates replacement React element for matched words
+    const replaceElement = (match: string, replace: ReactElement, index: number = 0) => {
+      const children = replace.props.children;
+      const newChildren = (children == null) || (children.length === 0)
+                            ? match
+                            : (typeof children === 'string'
+                                ? match.replace(regex, children)
+                                : children);
+      return React.cloneElement(replace, { key: `${match}-${index}` }, newChildren);
+    };
+    // recursively scans React nodes, replacing glossary words
+    const decorateNode = (node: ReactNode): ReactNode => {
+      const nodeType = typeof node;
+      /*
+       * simple nodes
+       */
+      if ((node == null) || (nodeType === 'boolean') || (nodeType === 'number')) {
+        return node;
+      }
+      if (!options || !options.words || !options.words.length || (options.replace == null)) {
+        return node;
+      }
+      /*
+       * string nodes
+       */
+      if (nodeType === 'string') {
+        const nodeStr = node as string;
+        if (typeof options.replace === 'string') {
+          // simple string replacement
+          return nodeStr.replace(regex, options.replace);
+        }
+        // ReactElement replacement
+        const matches: ITextRun[] = [];
+        const nodes: ReactNode[] = [];
+        let match;
+        // tslint:disable-next-line:no-conditional-assignment
+        while (match = regex.exec(nodeStr)) {
+          // cf. https://stackoverflow.com/a/2295943
+          matches.push({ start: match.index, end: match.index + match[0].length });
+        }
+        // if no matches, return the original node
+        if (!matches.length) { return node; }
+        // handle complete match
+        if ((matches.length === 1) && (matches[0].start === 0) && (matches[0].end === nodeStr.length)) {
+          return replaceElement(nodeStr, options.replace);
+        }
+        // handle partial matches
+        matches.forEach((match, index) => {
+          const prevMatch = index > 0 ? matches[index - 1] : { start: -1, end: 0 };
+          // add text before match
+          if (match.start > prevMatch.end) {
+            nodes.push(nodeStr.substring(prevMatch.end, match.start));
+          }
+          // replace the match
+          const matchStr = nodeStr.substring(match.start, match.end);
+          nodes.push(replaceElement(matchStr, options.replace as ReactElement, index));
+        });
+        // add text after the last match
+        if (matches[matches.length - 1].end < nodeStr.length) {
+          nodes.push(nodeStr.substring(matches[matches.length - 1].end));
+        }
+        return nodes;
+      }
+      /*
+       * array nodes
+       */
+      if (Array.isArray(node)) {
+        const nodeArray = node as ReactNodeArray;
+        // map each node and flatten the result
+        const newArray = nodeArray.reduce<ReactNodeArray>((prev, item) => {
+                                    const newNode = decorateNode(item);
+                                    if (Array.isArray(newNode)) {
+                                      prev.push(...newNode);
+                                    }
+                                    else {
+                                      prev.push(newNode);
+                                    }
+                                    return prev;
+                                  }, []);
+        if ((newArray.length === nodeArray.length) &&
+            newArray.every((item, index) => { return item === nodeArray[index]; })) {
+          // all items are unchanged -- reuse original node
+          return node;
+        }
+        return newArray;
+      }
+      /*
+       * ReactElement nodes
+       */
+      const elt = node as ReactElement;
+      if (elt.props && elt.props.children) {
+        const newChildren = decorateNode(elt.props.children);
+        // return original node if children haven't changed
+        return newChildren === elt.props.children
+                ? elt
+                : React.cloneElement(elt, undefined, newChildren);
+      }
+      // otherwise, return the original node
+      return node;
+    };
+    return decorateNode(input);
   }
 }
