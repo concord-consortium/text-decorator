@@ -1,4 +1,4 @@
-import TextDecorator, { DecorateChildren, IDecorateReactOptions } from "../src/text-decorator";
+import { DecorateChildren, IDecorateReactOptions } from "../src/text-decorator";
 import * as React from 'react';
 import { shallow } from 'enzyme';
 
@@ -6,9 +6,6 @@ import { shallow } from 'enzyme';
  * Dummy test
  */
 describe("DecorateChildren component", () => {
-  it("TextDecorator is instantiable", () => {
-    expect(new TextDecorator()).toBeInstanceOf(TextDecorator);
-  });
 
   it("is instantiable", () => {
     const options: IDecorateReactOptions = {
