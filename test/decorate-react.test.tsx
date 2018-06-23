@@ -1,4 +1,4 @@
-import { decorateReact, IDecorateReactOptions } from "../src/text-decorator";
+import { decorateHtml, decorateReact, IDecorateHtmlOptions, IDecorateReactOptions } from "../src/text-decorator";
 import * as React from 'react';
 type ReactElement = React.ReactElement<any>;
 
@@ -213,10 +213,40 @@ it("replaces matches with nested elements", () => {
   const input = <div>Some More Text</div>;
   const options: IDecorateReactOptions = {
           words: ['Text'],
-          replace: <span><div>Text</div></span>
+          replace: <span><div>$1</div></span>
         };
   // note: $1 not currently recognized in nested element trees
-  const expected = <div>Some More <span key='Text-0'><div>Text</div></span></div>;
+  const expected = <div>Some More <span key='Text-0'><div>$1</div></span></div>;
   const result = decorateReact(input, options) as ReactElement;
   expect(JSON.stringify(result)).toBe(JSON.stringify(expected));
+});
+
+it("works with user-defined components", () => {
+  const UserComponent: React.SFC = () => {
+    return <div>more text</div>;
+  };
+  const input = <div>Text and <UserComponent/></div>;
+  const options: IDecorateReactOptions = {
+    words: ['Text'],
+    replace: <span>$1</span>
+  };
+  // decorateReact can't penetrate the UserComponent, but it preserves it
+  const expected = <div><span key='Text-0'>Text</span> and <UserComponent/></div>;
+  const result = decorateReact(input, options) as ReactElement;
+  console.log(JSON.stringify(result));
+  expect(JSON.stringify(result)).toBe(JSON.stringify(expected));
+});
+
+it("works with dangerouslySetInnerHTML", () => {
+  const html = "<div>Some More Text</div>";
+  const options: IDecorateHtmlOptions = {
+          words: ['Some', 'More', 'Text'],
+          replace: '<span>$1</span>'
+        };
+  // with dangerouselySetInnerHTML, one must preprocess the HTML
+  const decoratedHtml = decorateHtml(html, options);
+  const input = <div dangerouslySetInnerHTML={{ __html: decoratedHtml }}></div>;
+  const expectedHtml = "<div><span>Some</span> <span>More</span> <span>Text</span></div>";
+  const expected = <div dangerouslySetInnerHTML={{ __html: expectedHtml}}></div>;
+  expect(JSON.stringify(input)).toBe(JSON.stringify(expected));
 });
