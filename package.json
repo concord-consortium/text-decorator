@@ -1,7 +1,7 @@
 {
   "name": "text-decorator",
   "version": "0.0.1",
-  "description": "Part of Concord Consortium's glossary-plugin which applies <span> tags and classes to text",
+  "description": "Part of Concord Consortium's text-plugins which applies <span> tags and classes to text",
   "keywords": [],
   "main": "dist/text-decorator.umd.js",
   "module": "dist/text-decorator.es5.js",
