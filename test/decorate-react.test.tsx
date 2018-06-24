@@ -233,7 +233,6 @@ it("works with user-defined components", () => {
   // decorateReact can't penetrate the UserComponent, but it preserves it
   const expected = <div><span key='Text-0'>Text</span> and <UserComponent/></div>;
   const result = decorateReact(input, options) as ReactElement;
-  console.log(JSON.stringify(result));
   expect(JSON.stringify(result)).toBe(JSON.stringify(expected));
 });
 

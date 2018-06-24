@@ -29,9 +29,41 @@ export interface IDecorateReactOptions extends IDecorateOptions {
   replace: string | ReactElement;
 }
 
+function hasUnbalancedBrackets(str: string) {
+  let bracketCount = 0;
+  for (let i = 0; i < str.length; ++i) {
+    const c = str.charAt(i);
+    if (c === '[') {
+      ++bracketCount;
+    }
+    else if (c === ']') {
+      if (bracketCount <= 0) return true;
+      --bracketCount;
+    }
+  }
+  return bracketCount !== 0;
+}
+
+// based on https://stackoverflow.com/a/6969486
+function escapeRegExp(str: string) {
+  const regex = hasUnbalancedBrackets(str)
+                    // allow '.', '?', but escape brackets
+                  ? /[\-\[\]\/\{\}\(\)\*\+\\\^\$\|]/g
+                    // allow '.', '?', '[', ']'
+                  : /[\-\/\{\}\(\)\*\+\\\^\$\|]/g;
+  return str.replace(regex, "\\$&");
+}
+
+function generateRegEx(words: string[]) {
+  const escaped = words.map(expr => escapeRegExp(expr))
+                      .filter(expr => !!expr);
+  return new RegExp(`(?:^|\\b)(${escaped.join('|')})(?=\\b|$)`, 'gi');
+}
+
 export function decorateHtml(input: string, options: IDecorateHtmlOptions) {
   const textRuns: ITextRun[] = [];
-  const regex = new RegExp(`(?:^|\\b)(${options.words.join('|')})(?=\\b|$)`, 'gi');
+  // regex for matching glossary words
+  const regex = generateRegEx(options.words);
   const parseOptions: ParserOptions = { sourceCodeLocationInfo: true };
   const fragment: Node = parse5.parseFragment(input, parseOptions) as Node;
 
@@ -66,7 +98,7 @@ export function decorateHtml(input: string, options: IDecorateHtmlOptions) {
 
 export function decorateReact(input: ReactNode, options: IDecorateReactOptions): ReactNode {
   // regex for matching glossary words
-  const regex = new RegExp(`(?:^|\\b)(${options.words.join('|')})(?=\\b|$)`, 'gi');
+  const regex = generateRegEx(options.words);
   // generates replacement React element for matched words
   const replaceElement = (match: string, replace: ReactElement, index: number = 0) => {
     const children = replace.props.children;

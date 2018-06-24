@@ -114,4 +114,32 @@ describe("TextDecorator.decorateHtml tests", () => {
     const result = decorateHtml(input, options);
     expect(result).toBe(`<span>span</span><span>div</span>`);
   });
+
+  it("supports '.' and '?' in words to match", () => {
+    const input = 'Clouds make the sky cloudy.';
+    const options: IDecorateHtmlOptions = { words: ['cloud.?'], replace: '<span>$1</span>' };
+    const result = decorateHtml(input, options);
+    expect(result).toBe(`<span>Clouds</span> make the sky <span>cloudy</span>.`);
+  });
+
+  it("escapes unsupported regex characters", () => {
+    const input = 'Text';
+    const options: IDecorateHtmlOptions = { words: ['}{)(^$*\\/|'], replace: '<span>$1</span>' };
+    const result = decorateHtml(input, options);
+    expect(result).toBe(`Text`);
+  });
+
+  it("supports balanced brackets (e.g. '[' and ']') in words to match", () => {
+    const input = 'They then them';
+    const options: IDecorateHtmlOptions = { words: ['the[ym]'], replace: '<span>$1</span>' };
+    const result = decorateHtml(input, options);
+    expect(result).toBe(`<span>They</span> then <span>them</span>`);
+  });
+
+  it("escapes unbalanced brackets (e.g. '[' and ']') in words to match", () => {
+    const input = 'They then them';
+    const options: IDecorateHtmlOptions = { words: ['the[ym', 'theym]', 'the]ym['], replace: '<span>$1</span>' };
+    const result = decorateHtml(input, options);
+    expect(result).toBe(`They then them`);
+  });
 });
