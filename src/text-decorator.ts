@@ -60,6 +60,24 @@ function generateRegEx(words: string[]) {
   return new RegExp(`(?:^|\\b)(${escaped.join('|')})(?=\\b|$)`, 'gi');
 }
 
+/*
+ * decorateHtml(input: string, options: IDecorateHtmlOptions)
+ * 
+ * Parses the specified HTML input, replacing instances of words specified in the
+ * options.words argument with the replacement string specified in options.replace.
+ * Handles HTML tags properly -- text will only be replaced in text, not in tags.
+ * Allows '$1' in the replacement string so that 'word' with a replacement string
+ * of '<span>"$1"</span>' would be replaced with '<span>"word"</span>'.
+ * 
+ * input: the HTML to be decorated as a string
+ * options:
+ *  words: string[] - a list of words to be decorated. Word-matching is case-insensitive.
+ *                    The words can include limited RegExp functionality:
+ *                      '.' - represents a wildcard character ('*' is not supported)
+ *                      '?' - makes the previous character optional
+ *                      '[', ']' - represents a set of possible characters, e.g. [aeiou] for a vowel
+ *  replace: string - the replacement string. Can include '$1' representing the matched word.
+ */
 export function decorateHtml(input: string, options: IDecorateHtmlOptions) {
   const textRuns: ITextRun[] = [];
   // regex for matching glossary words
@@ -96,6 +114,30 @@ export function decorateHtml(input: string, options: IDecorateHtmlOptions) {
   return result;
 }
 
+/*
+ * decorateReact(input: ReactNode, options: IDecorateReactOptions): ReactNode
+ * 
+ * Post-processes the specified React virtual DOM, replacing instances of words specified in
+ * the options.words argument with the replacement string specified in options.replace.
+ * Handles nested virtual DOM elements properly: text will only be replaced in text, not in tags.
+ * 
+ * While this function can be called directly, it is anticipated that for most clients either
+ * decorateReactHOC(), the higher-order component (HOC) wrapper, or DecorateChildren, the
+ * parent component that supports decorating its children, will be more convenient.
+ * 
+ * input: the virtual DOM to be decorated
+ * options:
+ *  words: string[] - a list of words to be decorated. Word-matching is case-insensitive.
+ *                    The words can include limited RegExp functionality:
+ *                      '.' - represents a wildcard character ('*' is not supported)
+ *                      '?' - makes the previous character optional
+ *                      '[', ']' - represents a set of possible characters, e.g. [aeiou] for a vowel
+ *  replace: the string or virtual DOM element with which to replace each matched word.
+ *           The replace element can be coded in JSX/TSX.
+ *           The replacement can include '$1' representing the matched word.
+ *           If the replacement is a single empty element without a '$1', the '$1' is inferred,
+ *           i.e. <span></span> is treated like <span>$1</span>.
+ */
 export function decorateReact(input: ReactNode, options: IDecorateReactOptions): ReactNode {
   // regex for matching glossary words
   const regex = generateRegEx(options.words);
