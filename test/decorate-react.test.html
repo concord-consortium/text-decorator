@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>decorateReact() Test</title>
+    <style>
+      #container {
+        display: flex;
+        flex-direction: column;
+      }
+      #src-text {
+        width: 400px;
+        padding: 20px;
+        border: 1px solid black;
+        font-size: 17px;
+      }
+      #glossary-words {
+        padding: 15px;
+        font-size: 19px;
+      }
+      #words-input {
+        width: 290px;
+        font-size: 16px;
+      }
+      #highlight-button {
+        margin-left: 10px;
+        width: 200px;
+        font-size: 16px;
+      }
+      .cc-glossary-word {
+        font-weight: bold;
+        color: blue;
+        font-style: italic;
+      }
+    </style>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="application/javascript" src="../dist/text-decorator.js"></script>
+    <script type="application/javascript">
+
+      class GlossarySource extends React.Component {
+        render() {
+          const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+          const tagNames = "html head body div span table.";
+          return (
+            React.createElement(TextDecorator.DecorateChildren, { decorateOptions: this.props.decorateOptions },
+              React.createElement('div', { id: 'src-text' }, 
+                React.createElement('span', { key: 'lorem-ipsum' }, loremIpsum, null),
+                " ",
+                React.createElement('span', { key: 'tag-names' },
+                  React.createElement('strong', null, "Tags: "), tagNames)
+              )
+            )
+          );
+        }
+      }
+
+      class GlossaryTest extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            inputText: "",
+            inputWords: []
+          };
+          this.handleChange = this.handleChange.bind(this);
+          this.handleKeyDown = this.handleKeyDown.bind(this);
+          this.highlightGlossaryWords = this.highlightGlossaryWords.bind(this);
+        }
+
+        handleChange(evt) {
+          this.setState({ inputText: evt.target.value });
+        }
+
+        handleKeyDown(evt) {
+          if (evt.keyCode === 13) {
+            this.highlightGlossaryWords();
+            evt.preventDefault();
+          }
+        }
+
+        highlightGlossaryWords() {
+          const words = this.state.inputText
+                          ? this.state.inputText.split(" ")
+                          : [];
+          this.setState({ inputWords: words });
+        }
+
+        render() {
+          const options = {
+                  words: this.state.inputWords,
+                  replace: React.createElement('span', { className: 'cc-glossary-word' }, '$1')
+                };
+          return (
+            React.createElement('div', { id: 'container' },
+              React.createElement(GlossarySource, { decorateOptions: options }, null),
+              React.createElement('label', { id: 'glossary-words' },
+                "Glossary Words ",
+                React.createElement('input', {  id: 'words-input',
+                                                value: this.state.inputText,
+                                                onChange: this.handleChange,
+                                                onKeyDown: this.handleKeyDown }, null)
+              ),
+              React.createElement('button', { id: 'highlight-button',
+                                              onClick: this.highlightGlossaryWords }, "Highlight Glossary Words")
+            )
+          );
+        }
+      }
+
+      const containerElt = document.getElementById('root');
+      const glossaryTest = React.createElement(GlossaryTest, null, null);
+      ReactDOM.render(glossaryTest, containerElt);
+    </script>
+  </body>
+</html>
