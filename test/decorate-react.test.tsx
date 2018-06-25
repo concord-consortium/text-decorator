@@ -37,27 +37,27 @@ describe("Test decorateReact (i.e. JSX/TSX)", () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(input).replace("Some", "More"));
   });
 
-  it("works with compiled JSX/TSX", () => {
+  it("returns the original compiled JSX/TSX when there is no text content to search", () => {
     const input = <div></div>;
     const options = { words: ['foo'], replace: '' };
     const result = decorateReact(input, options);
     expect(JSON.stringify(result)).toBe(JSON.stringify(input));
   });
 
-  it("works with compiled JSX/TSX", () => {
+  it("returns the original compiled JSX/TSX when the text does not contain a glossary word", () => {
     const input = <div>bar</div>;
     const options = { words: ['foo'], replace: '' };
     const result = decorateReact(input, options);
     expect(JSON.stringify(result)).toBe(JSON.stringify(input));
   });
 
-  it("works with compiled JSX/TSX", () => {
+  it("returns the original compiled JSX/TSX when there are nested tags that don't contain a glossary word", () => {
     const input = <div>Some <span>Text</span></div>;
     const result = decorateReact(input, kNullOptions);
     expect(JSON.stringify(result)).toBe(JSON.stringify(input));
   });
 
-  it("replaces text in compiled JSX/TSX", () => {
+  it("replaces text in compiled JSX/TSX child arrays", () => {
     const input = <div>{["Some", "Text"]}</div>;
     const someMoreOptions: IDecorateReactOptions = { words: ['Some'], replace: 'More' };
     const result = decorateReact(input, someMoreOptions);
@@ -164,7 +164,7 @@ describe("Test decorateReact (i.e. JSX/TSX)", () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expected));
   });
 
-  it("wraps partial text nodes with <span> nodes and classNames", () => {
+  it("wraps partial text nodes amidst punctuation with <span> nodes and classNames", () => {
     const input = <div>Some More "Text"</div>;
     const options: IDecorateReactOptions = {
             words: ['Text'],
@@ -209,7 +209,7 @@ describe("Test decorateReact (i.e. JSX/TSX)", () => {
   });
 });
 
-it("replaces matches with nested elements", () => {
+it("wraps matched text with multi-level JSX/TSX when appropriate", () => {
   const input = <div>Some More Text</div>;
   const options: IDecorateReactOptions = {
           words: ['Text'],
