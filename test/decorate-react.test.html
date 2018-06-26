@@ -17,17 +17,19 @@
     <script type="application/javascript" src="../dist/text-decorator.js"></script>
     <script type="application/javascript">
 
+      const cElt = React.createElement;
+      const decorateChildren = (props, children) => cElt(TextDecorator.DecorateChildren, props, children);
+
       class GlossarySource extends React.Component {
         render() {
           const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
           const tagNames = "html head body div span table.";
           return (
-            React.createElement(TextDecorator.DecorateChildren, { decorateOptions: this.props.decorateOptions },
-              React.createElement('div', { id: 'src-text' }, 
-                React.createElement('span', { key: 'lorem-ipsum' }, loremIpsum, null),
+            decorateChildren({ decorateOptions: this.props.decorateOptions },
+              cElt('div', { id: 'src-text' }, 
+                cElt('span', { key: 'lorem-ipsum' }, loremIpsum),
                 " ",
-                React.createElement('span', { key: 'tag-names' },
-                  React.createElement('strong', null, "Tags: "), tagNames)
+                cElt('span', { key: 'tag-names' }, cElt('strong', null, "Tags: "), tagNames)
               )
             )
           );
@@ -72,32 +74,31 @@
         render() {
           const options = {
                   words: this.state.inputWords,
-                  replace: React.createElement('span', {
-                                                className: 'cc-glossary-word',
-                                                // client specifies click callback
-                                                onClick: this.handleWordClick,
-                                              }, '$1')
+                  replace: cElt('span', {
+                                  className: 'cc-glossary-word',
+                                  // client specifies click callback
+                                  onClick: this.handleWordClick,
+                                }, '$1')
                 };
           return (
-            React.createElement('div', { id: 'container' },
-              React.createElement(GlossarySource, { decorateOptions: options }, null),
-              React.createElement('label', { id: 'glossary-words' },
+            cElt('div', { id: 'container' },
+              cElt(GlossarySource, { decorateOptions: options }),
+              cElt('label', { id: 'glossary-words' },
                 "Glossary Words ",
-                React.createElement('input', {  id: 'words-input',
-                                                value: this.state.inputText,
-                                                onChange: this.handleChange,
-                                                onKeyDown: this.handleKeyDown }, null)
+                cElt('input', { id: 'words-input',
+                                value: this.state.inputText,
+                                onChange: this.handleChange,
+                                onKeyDown: this.handleKeyDown })
               ),
-              React.createElement('button', { id: 'highlight-button',
-                                              onClick: this.highlightGlossaryWords }, "Highlight Glossary Words")
+              cElt('button', { id: 'highlight-button', onClick: this.highlightGlossaryWords },
+                "Highlight Glossary Words")
             )
           );
         }
       }
 
       const containerElt = document.getElementById('root');
-      const glossaryTest = React.createElement(GlossaryTest, null, null);
-      ReactDOM.render(glossaryTest, containerElt);
+      ReactDOM.render(cElt(GlossaryTest), containerElt);
     </script>
   </body>
 </html>
