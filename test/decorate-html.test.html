@@ -38,8 +38,17 @@
                           words: words,
                           replace: `<span class="cc-glossary-word">$1</span>`
                         };
-        if (words.length && words[0])
+        if (words.length && words[0]) {
           srcDiv.innerHTML = TextDecorator.decorateHtml(srcHtml, options);
+          TextDecorator.addEventListeners(
+                          'cc-glossary-word',
+                          [{
+                            type: 'click',
+                            listener: (evt) => {
+                              alert(`You clicked: "${evt.target.textContent}"!`);
+                            }
+                          }]);
+        }
       }
 
       function handleKeyDown(event) {

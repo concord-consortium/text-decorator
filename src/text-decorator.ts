@@ -17,7 +17,6 @@ interface ITextRun {
 }
 
 interface IDecorateOptions {
-  enableFilterClass?: string;
   words: string[];
 }
 
@@ -114,6 +113,52 @@ export function decorateHtml(input: string, options: IDecorateHtmlOptions) {
   return result;
 }
 
+interface IEventListener {
+  type: string;
+  listener: (evt: Event) => void;
+}
+
+type IEventListeners = IEventListener | IEventListener[];
+
+/*
+ * addEventListeners(className: string, listeners: IEventListeners,
+ *                    container: Element | Document = document)
+ * removeEventListeners(className: string, listeners: IEventListeners,
+ *                      container: Element | Document = document)
+ * 
+ * Since decorateHtml() is simply performing string replacement operations,
+ * it cannot add or remove any event handlers. Once the resulting HTML
+ * has been added to the DOM, addEventListeners() can be called to
+ * add handlers for 'click' or other events and the removeEventListeners()
+ * function can be used to remove those same event handlers.
+ * 
+ * className: string - the class used for the enclosing tag (e.g. 'cc-glossary-word')
+ * listeners: IEventListeners - one or more { type, listener } tuples
+ * container: Element | Document - the scope within which to search for elements
+ *                                  defaults to the entire document
+ */
+export function addEventListeners(className: string, listeners: IEventListeners,
+                                  container: Element | Document = document) {
+  const arrayListeners = Array.isArray(listeners) ? listeners : [listeners];
+  const elements = container.getElementsByClassName(className);
+  Array.prototype.forEach.call(elements, (elt: Element) => {
+    arrayListeners.forEach(listener => {
+      elt.addEventListener(listener.type, listener.listener);
+    });
+  });
+}
+
+export function removeEventListeners(className: string, listeners: IEventListeners,
+                                      container: Element | Document = document) {
+  const arrayListeners = Array.isArray(listeners) ? listeners : [listeners];
+  const elements = container.getElementsByClassName(className);
+  Array.prototype.forEach.call(elements, (elt: Element) => {
+    arrayListeners.forEach(listener => {
+      elt.removeEventListener(listener.type, listener.listener);
+    });
+  });
+}
+
 /*
  * decorateReact(input: ReactNode, options: IDecorateReactOptions): ReactNode
  * 
@@ -137,6 +182,9 @@ export function decorateHtml(input: string, options: IDecorateHtmlOptions) {
  *           The replacement can include '$1' representing the matched word.
  *           If the replacement is a single empty element without a '$1', the '$1' is inferred,
  *           i.e. <span></span> is treated like <span>$1</span>.
+ * 
+ * Event listeners can be included in the replace argument in typical React fashion, so
+ * the addEventListeners() and removeEventListeners() functions need/should not be called.
  */
 export function decorateReact(input: ReactNode, options: IDecorateReactOptions): ReactNode {
   // regex for matching glossary words

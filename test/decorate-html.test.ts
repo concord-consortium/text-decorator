@@ -1,4 +1,4 @@
-import { decorateHtml, IDecorateHtmlOptions } from "../src/text-decorator";
+import { decorateHtml, IDecorateHtmlOptions, addEventListeners, removeEventListeners } from "../src/text-decorator";
 import parse5, { DefaultTreeDocumentFragment as DocumentFragment,
                   DefaultTreeElement as Element,
                   DefaultTreeTextNode as TextNode } from 'parse5';
@@ -142,4 +142,91 @@ describe("TextDecorator.decorateHtml tests", () => {
     const result = decorateHtml(input, options);
     expect(result).toBe(`They then them`);
   });
+
+  it("adds and removes a single event handler appropriately", () => {
+    // Set up our document body
+    document.body.innerHTML = `
+      <div>
+        <span id="cc-glossary-word" class="cc-glossary-word"/>
+          Word
+        </span>
+      </div>`;
+    let clickCount = 0;
+    const onClick = { type: 'click', listener: (evt) => { ++clickCount; } };
+    addEventListeners('cc-glossary-word', onClick);
+
+    const elt = document.getElementById('cc-glossary-word');
+
+    // cf. https://stackoverflow.com/a/27557936
+    const event = document.createEvent("HTMLEvents");
+    event.initEvent("click", false, true);
+
+    elt.dispatchEvent(event);
+    expect(clickCount).toBe(1);
+
+    removeEventListeners('cc-glossary-word', onClick);
+
+    elt.dispatchEvent(event);
+    expect(clickCount).toBe(1);
+  });
+
+  it("adds and removes multiple event handlers appropriately", () => {
+    // Set up our document body
+    document.body.innerHTML = `
+      <div>
+        <span id="cc-glossary-word" class="cc-glossary-word"/>
+          Word
+        </span>
+      </div>`;
+    let eventCount = 0;
+    const onMouseDown = { type: 'mousedown', listener: (evt) => { ++eventCount; } };
+    const onMouseUp = { type: 'mouseup', listener: (evt) => { ++eventCount; } };
+    addEventListeners('cc-glossary-word', [onMouseDown, onMouseUp]);
+
+    const elt = document.getElementById('cc-glossary-word');
+
+    // cf. https://stackoverflow.com/a/27557936
+    const downEvent = document.createEvent("HTMLEvents");
+    downEvent.initEvent("mousedown", false, true);
+    const upEvent = document.createEvent("HTMLEvents");
+    upEvent.initEvent("mouseup", false, true);
+
+    elt.dispatchEvent(downEvent);
+    elt.dispatchEvent(upEvent);
+    expect(eventCount).toBe(2);
+
+    removeEventListeners('cc-glossary-word', [onMouseDown, onMouseUp]);
+
+    elt.dispatchEvent(downEvent);
+    elt.dispatchEvent(upEvent);
+    expect(eventCount).toBe(2);
+  });
+});
+
+it("accepts a container element for adding/removing elements", () => {
+  // Set up our document body
+  document.body.innerHTML = `
+    <div id="container">
+      <span id="cc-glossary-word" class="cc-glossary-word"/>
+        Word
+      </span>
+    </div>`;
+  const container = document.getElementById('container');
+  let clickCount = 0;
+  const onClick = { type: 'click', listener: (evt) => { ++clickCount; } };
+  addEventListeners('cc-glossary-word', onClick, container);
+
+  const elt = document.getElementById('cc-glossary-word');
+
+  // cf. https://stackoverflow.com/a/27557936
+  const event = document.createEvent("HTMLEvents");
+  event.initEvent("click", false, true);
+
+  elt.dispatchEvent(event);
+  expect(clickCount).toBe(1);
+
+  removeEventListeners('cc-glossary-word', onClick, container);
+
+  elt.dispatchEvent(event);
+  expect(clickCount).toBe(1);
 });

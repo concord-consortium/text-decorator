@@ -44,6 +44,7 @@
           this.handleChange = this.handleChange.bind(this);
           this.handleKeyDown = this.handleKeyDown.bind(this);
           this.highlightGlossaryWords = this.highlightGlossaryWords.bind(this);
+          this.handleWordClick = this.handleWordClick.bind(this);
         }
 
         handleChange(evt) {
@@ -64,10 +65,18 @@
           this.setState({ inputWords: words });
         }
 
+        handleWordClick(evt) {
+          alert(`You clicked: "${evt.target.textContent}"!`);
+        }
+
         render() {
           const options = {
                   words: this.state.inputWords,
-                  replace: React.createElement('span', { className: 'cc-glossary-word' }, '$1')
+                  replace: React.createElement('span', {
+                                                className: 'cc-glossary-word',
+                                                // client specifies click callback
+                                                onClick: this.handleWordClick,
+                                              }, '$1')
                 };
           return (
             React.createElement('div', { id: 'container' },
