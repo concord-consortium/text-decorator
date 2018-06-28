@@ -33,9 +33,7 @@
     "commit": "git-cz",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
-    "lerna:remove:usage": "echo 'Usage: npm run lerna:remove -- module-to-remove \n cf. https://github.com/lerna/lerna/issues/833#issuecomment-396462481 \n cf. https://github.com/npm/npm/issues/9627#issuecomment-319449695 '",
-    "lerna:remove": "bash -c 'lerna exec -- yarn remove \"$0\" || lerna bootstrap'"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -103,7 +101,6 @@
     "jest-environment-enzyme": "^6.0.2",
     "jest-enzyme": "^6.0.2",
     "lint-staged": "^7.0.0",
-    "lodash.camelcase": "^4.3.0",
     "prettier": "^1.4.4",
     "prompt": "^1.0.0",
     "react": "^16.4.1",
