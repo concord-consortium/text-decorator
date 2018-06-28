@@ -97,6 +97,7 @@
     "cz-conventional-changelog": "^2.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "gh-pages": "^1.2.0",
     "husky": "^0.14.0",
     "jest": "^22.0.2",
     "jest-environment-enzyme": "^6.0.2",
