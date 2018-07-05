@@ -11,6 +11,8 @@ const LibraryName = 'TextDecorator';
 
 const outputCommon = {
         globals: { 'react': 'React', 'react-dom': 'ReactDOM' },
+        banner: `/* React is optional dependency */\n` +
+                `if (typeof React === 'undefined') React = undefined;\n`,
         sourcemap: true
       };
 
