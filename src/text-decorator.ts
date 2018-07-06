@@ -60,6 +60,56 @@ function generateRegEx(words: string[]) {
 }
 
 /*
+ * decorateDOMClasses(textClasses: string | string[], options: IDecorateHtmlOptions,
+ *                    wordClass?: string, listeners?: IEventListeners,
+ *                    container: Element | Document = document)
+ * 
+ * Parses the innerHTML of DOM elements with the specified classes, replacing instances of words
+ * specified in the options.words argument with the replacement string specified in options.replace.
+ * Handles HTML tags properly -- text will only be replaced in text, not in tags.
+ * Allows '$1' in the replacement string so that 'word' with a replacement string
+ * of '<span>"$1"</span>' would be replaced with '<span>"word"</span>'.
+ * Adds the specified event handlers to all elements with the specified class, which will
+ * correspond to each replaced word if the replacement string specifies an element with a class.
+ * 
+ * If this function is called multiple times on the same DOM node, it will create extraneous DOM
+ * element nesting and redundant addition of event listeners. It is best used in contexts where
+ * it can be called immediately after the HTML content is rendered.
+ * 
+ * textClasses: string | string[] - a class or array of classes whose contents are to be decorated.
+ * options:
+ *  words: string[] - a list of words to be decorated. Word-matching is case-insensitive.
+ *                    The words can include limited RegExp functionality:
+ *                      '.' - represents a wildcard character ('*' is not supported)
+ *                      '?' - makes the previous character optional
+ *                      '[', ']' - represents a set of possible characters, e.g. [aeiou] for a vowel
+ *  replace: string - the replacement string. Can include '$1' representing the matched word.
+ * className: string - the class used for the enclosing tag (e.g. 'cc-glossary-word')
+ * listeners: IEventListeners - one or more { type, listener } tuples
+ * container: Element | Document - the scope within which to search for elements
+ *                                  defaults to the entire document
+ */
+export function decorateDOMClasses(textClasses: string | string[], options: IDecorateHtmlOptions,
+                                    wordClass?: string, listeners?: IEventListeners,
+                                    container: Element | Document = document) {
+  // accept single class or array of classes
+  const classes = Array.isArray(textClasses) ? textClasses : [textClasses];
+
+  // decorate the text contained in the specified DOM elements
+  classes.forEach((c) => {
+    const elements = document.getElementsByClassName(c);
+    Array.prototype.forEach.call(elements, (elt: Element) => {
+      elt.innerHTML = decorateHtml(elt.innerHTML, options);
+    });
+  });
+
+  // add any specified event listeners
+  if (wordClass && listeners) {
+    addEventListeners(wordClass, listeners, container);
+  }
+}
+
+/*
  * decorateHtml(input: string, options: IDecorateHtmlOptions)
  * 
  * Parses the specified HTML input, replacing instances of words specified in the
