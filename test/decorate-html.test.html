@@ -21,9 +21,10 @@
     </div>
     <script type="application/javascript" src="../dist/text-decorator.js"></script>
     <script type="application/javascript">
+      const introText = "This demo uses the <strong>decorateHtml()</strong> function to decorate HTML before it is attached to the element."
       const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
       const tagNames = "<strong>Tags:</strong> html head body div span table.";
-      const srcHtml = `<div><span>${loremIpsum}</span> <span>${tagNames}</span></div>`;
+      const srcHtml = `<div class='cc-glossarize'><span>${introText}</span><br/><br/><span>${loremIpsum}</span><br/><br/><span>${tagNames}</span></div>`;
       const srcDiv = document.getElementById("src-text");
       const wordsInput = document.getElementById("words-input");
 

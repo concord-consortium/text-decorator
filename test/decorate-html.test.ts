@@ -147,7 +147,7 @@ describe("TextDecorator.decorateHtml tests", () => {
     // Set up our document body
     document.body.innerHTML = `
       <div>
-        <span id="cc-glossary-word" class="cc-glossary-word"/>
+        <span id="cc-glossary-word" class="cc-glossary-word">
           Word
         </span>
       </div>`;
@@ -174,7 +174,7 @@ describe("TextDecorator.decorateHtml tests", () => {
     // Set up our document body
     document.body.innerHTML = `
       <div>
-        <span id="cc-glossary-word" class="cc-glossary-word"/>
+        <span id="cc-glossary-word" class="cc-glossary-word">
           Word
         </span>
       </div>`;
@@ -207,7 +207,7 @@ it("accepts a container element for adding/removing elements", () => {
   // Set up our document body
   document.body.innerHTML = `
     <div id="container">
-      <span id="cc-glossary-word" class="cc-glossary-word"/>
+      <span id="cc-glossary-word" class="cc-glossary-word">
         Word
       </span>
     </div>`;
