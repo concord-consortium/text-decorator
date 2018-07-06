@@ -2,6 +2,7 @@ import { decorateHtml, IDecorateHtmlOptions, addEventListeners, removeEventListe
 import parse5, { DefaultTreeDocumentFragment as DocumentFragment,
                   DefaultTreeElement as Element,
                   DefaultTreeTextNode as TextNode } from 'parse5';
+import { dispatchSimulatedEvent } from "./test-utils.ts";
 
 /**
  * Dummy test
@@ -156,17 +157,12 @@ describe("TextDecorator.decorateHtml tests", () => {
     addEventListeners('cc-glossary-word', onClick);
 
     const elt = document.getElementById('cc-glossary-word');
-
-    // cf. https://stackoverflow.com/a/27557936
-    const event = document.createEvent("HTMLEvents");
-    event.initEvent("click", false, true);
-
-    elt.dispatchEvent(event);
+    dispatchSimulatedEvent(elt, 'click');
     expect(clickCount).toBe(1);
 
     removeEventListeners('cc-glossary-word', onClick);
 
-    elt.dispatchEvent(event);
+    dispatchSimulatedEvent(elt, 'click');
     expect(clickCount).toBe(1);
   });
 
@@ -185,20 +181,14 @@ describe("TextDecorator.decorateHtml tests", () => {
 
     const elt = document.getElementById('cc-glossary-word');
 
-    // cf. https://stackoverflow.com/a/27557936
-    const downEvent = document.createEvent("HTMLEvents");
-    downEvent.initEvent("mousedown", false, true);
-    const upEvent = document.createEvent("HTMLEvents");
-    upEvent.initEvent("mouseup", false, true);
-
-    elt.dispatchEvent(downEvent);
-    elt.dispatchEvent(upEvent);
+    dispatchSimulatedEvent(elt, 'mousedown');
+    dispatchSimulatedEvent(elt, 'mouseup');
     expect(eventCount).toBe(2);
 
     removeEventListeners('cc-glossary-word', [onMouseDown, onMouseUp]);
 
-    elt.dispatchEvent(downEvent);
-    elt.dispatchEvent(upEvent);
+    dispatchSimulatedEvent(elt, 'mousedown');
+    dispatchSimulatedEvent(elt, 'mouseup');
     expect(eventCount).toBe(2);
   });
 });
@@ -218,15 +208,11 @@ it("accepts a container element for adding/removing elements", () => {
 
   const elt = document.getElementById('cc-glossary-word');
 
-  // cf. https://stackoverflow.com/a/27557936
-  const event = document.createEvent("HTMLEvents");
-  event.initEvent("click", false, true);
-
-  elt.dispatchEvent(event);
+  dispatchSimulatedEvent(elt, 'click');
   expect(clickCount).toBe(1);
 
   removeEventListeners('cc-glossary-word', onClick, container);
 
-  elt.dispatchEvent(event);
+  dispatchSimulatedEvent(elt, 'click');
   expect(clickCount).toBe(1);
 });

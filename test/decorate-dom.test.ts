@@ -1,4 +1,5 @@
 import { decorateDOMClasses, IDecorateHtmlOptions } from "../src/text-decorator";
+import { dispatchSimulatedEvent } from "./test-utils.ts";
 
 describe("TextDecorator.decorateDOMClasses tests", () => {
 
@@ -22,12 +23,7 @@ describe("TextDecorator.decorateDOMClasses tests", () => {
     const elements = document.getElementsByClassName('cc-glossary-word');
     expect(elements.length).toBe(1);
     const elt = elements && elements[0];
-
-    // cf. https://stackoverflow.com/a/27557936
-    const event = document.createEvent("HTMLEvents");
-    event.initEvent("click", false, true);
-
-    elt.dispatchEvent(event);
+    dispatchSimulatedEvent(elt, 'click');
     expect(clickCount).toBe(1);
   });
 
@@ -45,19 +41,14 @@ describe("TextDecorator.decorateDOMClasses tests", () => {
     let clickCount = 0;
     const onClick = { type: 'click', listener: (evt) => { ++clickCount; } };
 
-    decorateDOMClasses(['cc-glossarize', 'foo'],
+    decorateDOMClasses(['foo', 'cc-glossarize', 'bar'],
                         { words: ['Text'], replace: "<span class='cc-glossary-word'>$1</span>" },
                         'cc-glossary-word', onClick, document);
 
     const elements = document.getElementsByClassName('cc-glossary-word');
     expect(elements.length).toBe(1);
     const elt = elements && elements[0];
-
-    // cf. https://stackoverflow.com/a/27557936
-    const event = document.createEvent("HTMLEvents");
-    event.initEvent("click", false, true);
-
-    elt.dispatchEvent(event);
+    dispatchSimulatedEvent(elt, 'click');
     expect(clickCount).toBe(1);
   });
 

@@ -77,6 +77,10 @@ function generateRegEx(words: string[]) {
  * it can be called immediately after the HTML content is rendered.
  * 
  * textClasses: string | string[] - a class or array of classes whose contents are to be decorated.
+ *                                  The individual array elements are passed to getElementsByClassName(),
+ *                                  so multiple space-delimited classes are ANDed together, i.e. all
+ *                                  classes must be present to match, while the array elements are ORed,
+ *                                  i.e. matching any array element constitutes a match.
  * options:
  *  words: string[] - a list of words to be decorated. Word-matching is case-insensitive.
  *                    The words can include limited RegExp functionality:
@@ -84,7 +88,7 @@ function generateRegEx(words: string[]) {
  *                      '?' - makes the previous character optional
  *                      '[', ']' - represents a set of possible characters, e.g. [aeiou] for a vowel
  *  replace: string - the replacement string. Can include '$1' representing the matched word.
- * className: string - the class used for the enclosing tag (e.g. 'cc-glossary-word')
+ * wordClass: string - the class used for the enclosing tag (e.g. 'cc-glossary-word')
  * listeners: IEventListeners - one or more { type, listener } tuples
  * container: Element | Document - the scope within which to search for elements
  *                                  defaults to the entire document
