@@ -51,7 +51,7 @@
     }
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "../../node_modules/jest-enzyme/lib/index.js",
+    "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
     "testEnvironment": "enzyme",
     "transform": {
       ".(ts|tsx)": "../../node_modules/ts-jest/preprocessor.js"
