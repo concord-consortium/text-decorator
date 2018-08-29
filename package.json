@@ -54,7 +54,7 @@
     "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
     "testEnvironment": "enzyme",
     "transform": {
-      ".(ts|tsx)": "../../node_modules/ts-jest/preprocessor.js"
+      ".(ts|tsx)": "ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
