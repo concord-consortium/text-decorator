@@ -1,6 +1,6 @@
 {
   "name": "@concord-consortium/text-decorator",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Part of Concord Consortium's text-plugins which can be used to apply <span> tags and classes to text",
   "keywords": [],
   "main": "dist/text-decorator.umd.js",
