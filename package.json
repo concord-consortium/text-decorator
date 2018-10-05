@@ -2,7 +2,14 @@
   "name": "@concord-consortium/text-decorator",
   "version": "1.0.0",
   "description": "The TextDecorator library provides text decoration capabilities for HTML and React apps",
-  "keywords": ["text", "decoration", "text-decorator", "html", "rect", "parse"],
+  "keywords": [
+    "text",
+    "decoration",
+    "text-decorator",
+    "html",
+    "rect",
+    "parse"
+  ],
   "main": "dist/text-decorator.js",
   "files": [
     "dist/library"
@@ -26,7 +33,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "deploy:gh-pages": "npm run build && ./tools/deploy-gh-pages.js",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
     "semantic-release": "semantic-release",

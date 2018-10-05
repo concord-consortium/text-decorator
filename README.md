@@ -7,6 +7,10 @@ This project was created using the [TypeScript Library Starter](https://github.c
 - [DOM Demo](https://concord-consortium.github.io/text-decorator/test/decorate-dom.test.html)
 - [React Demo](https://concord-consortium.github.io/text-decorator/test/decorate-react.test.html)
 
+### Docs
+
+https://concord-consortium.github.io/text-decorator/docs/
+
 ## API
 
 ### decorateDOMClasses
