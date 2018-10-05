@@ -1,11 +1,9 @@
 {
   "name": "@concord-consortium/text-decorator",
   "version": "1.0.0",
-  "description": "Part of Concord Consortium's text-plugins which can be used to apply <span> tags and classes to text",
+  "description": "The TextDecorator library provides text decoration capabilities for HTML and React apps",
   "keywords": [],
-  "main": "dist/text-decorator.umd.js",
-  "global": "dist/text-decorator.js",
-  "module": "dist/text-decorator.es5.js",
+  "main": "dist/text-decorator.js",
   "typings": "dist/types/text-decorator.d.ts",
   "files": [
     "dist"
@@ -13,7 +11,7 @@
   "author": "Concord Consortium <developer@concord.org>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/concord-consortium/text-plugins"
+    "url": "https://github.com/concord-consortium/text-decorator"
   },
   "license": "MIT",
   "engines": {

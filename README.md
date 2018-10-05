@@ -1,13 +1,11 @@
 # Text Decorator
 
-Part of [Concord Consortium's](https://concord.org) Glossary PluginApp package which can be used to apply `<span>` tags and classes to application text to support the glossary. It is deployed to [github.io](https://concord-consortium.github.io/text-plugins/).
-
 This project was created using the [TypeScript Library Starter](https://github.com/alexjoverm/typescript-library-starter#readme) project, whose local [README](README-typescript-library-starter) provides additional information about the configuration of the project.
 
 ### Demos
-- [HTML Demo](https://concord-consortium.github.io/text-plugins/test/decorate-html.test.html)
-- [DOM Demo](https://concord-consortium.github.io/text-plugins/test/decorate-dom.test.html)
-- [React Demo](https://concord-consortium.github.io/text-plugins/test/decorate-react.test.html)
+- [HTML Demo](https://concord-consortium.github.io/text-decorator/test/decorate-html.test.html)
+- [DOM Demo](https://concord-consortium.github.io/text-decorator/test/decorate-dom.test.html)
+- [React Demo](https://concord-consortium.github.io/text-decorator/test/decorate-react.test.html)
 
 ## API
 
