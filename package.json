@@ -1,6 +1,6 @@
 {
   "name": "@concord-consortium/text-decorator",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "The TextDecorator library provides text decoration capabilities for HTML and React apps",
   "keywords": [
     "text",
@@ -11,10 +11,10 @@
     "parse"
   ],
   "main": "dist/text-decorator.js",
-  "files": [
-    "dist/library"
-  ],
   "typings": "dist/types/text-decorator.d.ts",
+  "files": [
+    "dist"
+  ],
   "author": "Concord Consortium <developer@concord.org>",
   "repository": {
     "type": "git",
